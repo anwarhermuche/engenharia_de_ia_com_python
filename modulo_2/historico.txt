@@ -1,0 +1,4 @@
+Human: opa!
+Ai: opa!
+Human: tudo bom por aí?
+Ai: tudo 
