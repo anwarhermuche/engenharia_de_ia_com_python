@@ -1,0 +1,2 @@
+Modelo: gpt-4.1-mini | Tokens System Prompt: 1000 | Tokens Input: 70.0 | Tokens Output: 80.0 | Custo: 0.5148
+Modelo: claude-4-opus | Tokens System Prompt: 1000 | Tokens Input: 70.0 | Tokens Output: 80.0 | Custo: 4.787999999999999
