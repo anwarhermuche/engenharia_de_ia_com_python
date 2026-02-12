@@ -43,7 +43,6 @@ utilizando Programação Orientada a Objetos, herança, polimorfismo e variávei
 
 from modulo_4.models.openai import OpenAIModel
 from modulo_4.models.llama import LlamaModel
-
 from dotenv import load_dotenv
 import os
 
@@ -52,13 +51,11 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 LLAMA_API_KEY = os.getenv("LLAMA_API_KEY")
 
-modelo = input("Qual modelo você quer (gpt-... -> OpenAI | llama-... -> Llama)? ").strip().lower()
+modelo = input("Qual modelo quer usar (gpt ou llama)? ").strip().lower()
 
-if "gpt" in modelo:
-    openai = OpenAIModel(modelo)
-    print(openai.invoke("Olá!", OPENAI_API_KEY))
-elif "llama" in modelo:
-    llama = LlamaModel(modelo)
-    print(llama.invoke("Opa!", LLAMA_API_KEY))
-else:
-    print("Modelo não encontrado")
+if modelo == 'gpt':
+    openai = OpenAIModel("gpt-5.1")
+    print(openai.invoke("Olá", api_key = OPENAI_API_KEY))
+elif modelo == 'llama':
+    llama = LlamaModel("llama-70b", temperatura=0.9)
+    print(llama.invoke("Olá", api_key = LLAMA_API_KEY))

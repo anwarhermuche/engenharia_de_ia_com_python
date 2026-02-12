@@ -3,31 +3,40 @@ import numpy as np
 class VectorStore:
 
     def __init__(self):
+        self.embeddings = np.array([])
         self.documents = np.array([])
-        np.random.seed(42)
 
-    def __text_to_embedding(self, text: str) -> np.ndarray:
-        return np.random.rand(768)
 
-    def add_document(self, doc: dict) -> None:
-        embeddings = self.__text_to_embedding(doc['page_content'])
+    def __generate_embedding(self, page_content: str) -> np.ndarray:
+        np.random.seed(40)
+        vector = np.random.random(10)
+        return vector
 
-        doc['embedding'] = embeddings
 
-        self.documents = np.append(self.documents, doc)
+    def add_document(self, document: dict) -> None:
+        if self.documents.size == 0:
+            self.documents = np.array([document], dtype=object)
+            self.embeddings = np.array([self.__generate_embedding(document.get('page_content', ''))])
+        else:
+            self.documents = np.append(self.documents, [document])
+            self.embeddings = np.append(self.embeddings, [self.__generate_embedding(document.get('page_content', ''))], axis=0)
+        return
 
-        return None
+    def __calc_similarity(self, v1: np.ndarray, v2: np.ndarray) -> float:
+        dotprod = np.dot(v1, v2)
+        norm_v1 = np.linalg.norm(v1, ord = 2)
+        norm_v2 = np.linalg.norm(v2, ord = 2)
+        return dotprod/(norm_v1*norm_v2)
 
-    def query(self, vector: np.ndarray, k: int = 4) -> np.ndarray:
-        embeddings = np.array([doc['embedding'] for doc in self.documents])
-        norms = np.linalg.norm(embeddings, axis = 1)
-        norm_query = np.linalg.norm(vector)
-        dot_prods = np.dot(embeddings, vector)
-
-        similarity_vector = np.array([{"cosine_distance": 1 - dot_prods[i]/(norms[i]*norm_query),
-        "page_content": self.documents[i]['page_content'],
-        "metadata": self.documents[i]['metadata']} for i in range(len(self.documents))])
-
-        similarity_vector = sorted(similarity_vector.tolist(), key = lambda x: x['cosine_distance'], reverse=False)
-
-        return similarity_vector[:k]
+    def query(self, query: np.ndarray, K: int = 4) -> list[dict]:
+        similarities = [self.__calc_similarity(query, vec) for vec in self.embeddings]
+        indices = np.argsort(similarities)[::-1]
+        result = []
+        similarities_k = np.array(similarities)[indices][:K]
+        documents_k = self.documents[indices][:K]
+        for sim, doc in zip(similarities_k, documents_k):
+            result.append({
+                'similarity': sim,
+                'document': doc
+            })
+        return result

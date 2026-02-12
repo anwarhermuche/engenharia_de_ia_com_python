@@ -44,48 +44,50 @@ np.array([0.0, 0.2, ...])
 - Uma lista com os K documentos mais similares
 - O valor de similaridade associado a cada documento
 """
-
+from modulo_5.vector_store import VectorStore
 import numpy as np
 
-from modulo_5.vector_store import VectorStore
+lista_documentos = [
+    {
+        "page_content": "Python é uma linguagem de programação versátil.",
+        "metadata": {"source": "artigo1.txt", "page": 1}
+    },
+    {
+        "page_content": "O NumPy facilita operações matemáticas com arrays.",
+        "metadata": {"source": "artigo2.txt", "page": 2}
+    },
+    {
+        "page_content": "A inteligência artificial está transformando indústrias.",
+        "metadata": {"source": "artigo3.txt", "page": 5}
+    },
+    {
+        "page_content": "Vetores são essenciais em machine learning.",
+        "metadata": {"source": "apostila.pdf", "page": 10}
+    },
+    {
+        "page_content": "Cosine similarity mede a semelhança entre dois vetores.",
+        "metadata": {"source": "slide_apresentacao.ppt", "page": 3}
+    },
+    {
+        "page_content": "A busca vetorial permite encontrar conteúdos similares.",
+        "metadata": {"source": "relatorio.docx", "page": 7}
+    },
+    {
+        "page_content": "Documentos podem ser indexados por seus embeddings vetoriais.",
+        "metadata": {"source": "manual.doc", "page": 12}
+    },
+    {
+        "page_content": "Machine learning depende de bons conjuntos de dados.",
+        "metadata": {"source": "artigo4.txt", "page": 4}
+    }
+]
 
 vector_store = VectorStore()
 
-# Documentos
-document1 = {
-    "page_content": "A inteligência artificial transformou a indústria de tecnologia. Modelos de linguagem grandes (LLMs) estão na vanguarda dessa revolução, permitindo novas aplicações em processamento de linguagem natural e geração de conteúdo.",
-    "metadata": {"page": 1, "author": "Alice"}
-}
+for doc in lista_documentos:
+    vector_store.add_document(doc)
 
-document2 = {
-    "page_content": "NumPy é a biblioteca fundamental para computação numérica em Python, oferecendo arrays multidimensionais eficientes e ferramentas para álgebra linear. É essencial para a ciência de dados e machine learning.",
-    "metadata": {"page": 2, "author": "Bob"}
-}
 
-document3 = {
-    "page_content": "O conceito de Recuperação Aumentada por Geração (RAG) combina a capacidade de LLMs de gerar texto com sistemas de recuperação de informação, garantindo que as respostas sejam baseadas em dados factuais.",
-    "metadata": {"page": 3, "author": "Charlie"}
-}
+query = np.random.random(10)
 
-document4 = {
-    "page_content": "Vetores de embeddings são representações numéricas de texto, imagens ou outros dados, onde a similaridade semântica se traduz em proximidade vetorial. A similaridade de cosseno é uma métrica comum para isso.",
-    "metadata": {"page": 4, "author": "David"}
-}
-
-document5 = {
-    "page_content": "Google Colab oferece um ambiente de notebook Jupyter baseado em nuvem, ideal para desenvolvimento e experimentação com modelos de IA e computação intensiva, utilizando GPUs e TPUs gratuitamente.",
-    "metadata": {"page": 5, "author": "Eve"}
-}
-
-# Adding Documents
-vector_store.add_document(document1)
-vector_store.add_document(document2)
-vector_store.add_document(document3)
-vector_store.add_document(document4)
-vector_store.add_document(document5)
-
-# Buscar por similaridade
-query = np.random.rand(768)
-most_similar_vectors = vector_store.query(query, 2)
-
-print(most_similar_vectors)
+print(vector_store.query(query, K = 5))
